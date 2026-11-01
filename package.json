@@ -1,0 +1,9 @@
+{
+  "name": "amit-jewellers-live-rates",
+  "version": "1.1.0",
+  "private": true,
+  "description": "AMIT JEWELLERS market reference and jeweller rate dashboard",
+  "scripts": { "start": "node server.js" },
+  "dependencies": { "dotenv": "^16.4.5", "express": "^4.21.2" },
+  "engines": { "node": ">=20" }
+}
