@@ -5,8 +5,27 @@ app.use(express.json({limit:"20kb"}));app.use(express.static(path.join(__dirname
 const defaults={goldBadla:0,silverBadla:0,making18:0,making20:0,making22:0,making24:0,silverMaking:0,gstPercent:3,silverRtgsAdd:0};
 function read(){try{return {...defaults,...JSON.parse(fs.readFileSync(FILE,"utf8"))}}catch{return {...defaults}}}
 function auth(req,res,next){const pass=process.env.ADMIN_PASSWORD,got=(req.get("authorization")||"").replace(/^Bearer /,"");if(!pass||pass.length<12)return res.status(503).json({error:"Secure ADMIN_PASSWORD (12+ characters) is not configured."});if(got!==pass)return res.status(401).json({error:"Unauthorized"});next()}
+const CACHE_MS=60_000;let marketCache=null,cacheAt=0,inFlight=null;
+async function fetchJson(url){const r=await fetch(url,{headers:{"Accept":"application/json","User-Agent":"AMIT-JEWELLERS-rate-dashboard/1.0"},signal:AbortSignal.timeout(12000)});if(!r.ok)throw Error("Corgano provider HTTP "+r.status);return r.json()}
+async function getMarketData(){
+ if(marketCache&&Date.now()-cacheAt<CACHE_MS)return marketCache;
+ if(inFlight)return inFlight;
+ inFlight=(async()=>{
+  const [gold,silver]=await Promise.all([
+   fetchJson("https://goldprice.corgano.com/api/v1/latest?currency=INR"),
+   fetchJson("https://silverprice.corgano.com/api/v1/latest?currency=INR")
+  ]);
+  const gi=gold?.data?.currencies?.INR,si=silver?.data?.currencies?.INR;
+  const goldPerGram=Number(gi?.per_gram),silverPerKg=Number(si?.per_kg);
+  const gt=gold?.data?.as_of,st=silver?.data?.as_of;
+  if(!Number.isFinite(goldPerGram)||goldPerGram<=0||!Number.isFinite(silverPerKg)||silverPerKg<=0||!gt||!st)throw Error("Corgano INR response validation failed; no unverified rates shown.");
+  const value={available:true,isMCX:false,source:"Corgano international spot reference (INR)",timestamp:gt<st?gt:st,goldPer10g:goldPerGram*10,silverPerKg,attribution:{gold:"Gold price data by Corgano",goldUrl:"https://goldprice.corgano.com/",silver:"Silver price data by Corgano",silverUrl:"https://silverprice.corgano.com/"}};
+  marketCache=value;cacheAt=Date.now();return value;
+ })();
+ try{return await inFlight}finally{inFlight=null}
+}
 app.get("/health",(q,s)=>s.json({ok:true}));
-app.get("/api/market-data",async(q,s)=>{try{const r=await fetch(process.env.SPOT_API_URL||"https://data-asg.goldprice.org/dbase/INR",{signal:AbortSignal.timeout(10000)});if(!r.ok)throw Error("Provider HTTP "+r.status);const d=await r.json(),x=Array.isArray(d.items)?d.items[0]:d,c=String(x?.curr||d.currency||d.curr||"").toUpperCase(),g=Number(x?.xauPrice),a=Number(x?.xagPrice);if(c!=="INR"||!Number.isFinite(g)||!Number.isFinite(a)||g<=0||a<=0)throw Error("Provider currency/response not verified as INR; refusing to show an unverified price.");s.json({available:true,isMCX:false,source:"International spot reference (INR)",timestamp:new Date().toISOString(),goldPer10g:g*10/31.1034768,silverPerKg:a*1000/31.1034768})}catch(e){s.status(503).json({available:false,isMCX:false,error:e.message})}});
+app.get("/api/market-data",async(q,s)=>{try{s.set("Cache-Control","public, max-age=30");s.json(await getMarketData())}catch(e){s.status(503).json({available:false,isMCX:false,error:e.message})}});
 app.get("/api/public-settings",(q,s)=>{const x=read();s.json(x)});
 app.get("/api/settings",auth,(q,s)=>s.json(read()));
 app.put("/api/settings",auth,(q,s)=>{const o={};for(const k of Object.keys(defaults)){const n=Number(q.body?.[k]);if(!Number.isFinite(n)||n<0||n>1000000)return s.status(400).json({error:"Invalid numeric setting: "+k});o[k]=n}if(o.gstPercent>100)return s.status(400).json({error:"GST percent must be 0-100"});fs.writeFileSync(FILE,JSON.stringify(o,null,2));s.json({ok:true,settings:o})});
