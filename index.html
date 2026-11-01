@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="hi">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AMIT JEWELLERS — Live Rates</title>
+<style>
+:root{--gold:#e8c45b;--bg:#070707;--panel:#121212;--line:#57451b;--muted:#aaa}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:#fff;font:15px system-ui,Arial,sans-serif;padding-bottom:30px}
+header{text-align:center;padding:14px 10px 12px;background:#050505;border-bottom:1px solid var(--line)}
+.crown{color:var(--gold);font-size:18px}.logo{font:900 29px Georgia;color:var(--gold);letter-spacing:3px}
+.brand{font:800 19px Georgia;color:var(--gold);letter-spacing:3px}.phone{color:#e9d79e;font-weight:700;margin-top:4px}
+.top{background:linear-gradient(90deg,#b88922,#f5df87,#b88922);color:#111;text-align:center;font-weight:900;padding:7px}
+.wrap{max-width:900px;margin:auto;padding:10px}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.card{border:1px solid var(--line);background:var(--panel);border-radius:8px;overflow:hidden}
+.card h3{margin:0;padding:7px;background:linear-gradient(#f5df87,#bd8d25);color:#111;text-align:center;font-size:12px}
+.value{text-align:center;padding:10px 4px;font-size:18px;font-weight:800;color:#fff}
+.small{text-align:center;color:var(--muted);font-size:11px;padding:0 4px 8px}
+.section{margin-top:14px}.section-title{color:var(--gold);font-weight:900;letter-spacing:.5px;margin:4px 0 8px}
+table{width:100%;border-collapse:separate;border-spacing:0 5px;font-size:13px}
+th{background:#32270d;color:var(--gold);padding:9px 6px;text-align:right}th:first-child{text-align:left}
+td{background:#111;border:1px solid #392e17;padding:9px 6px;text-align:right;font-weight:700}
+td:first-child{text-align:left;color:var(--gold)}
+.note{color:#aaa;font-size:11px;line-height:1.5;margin:7px 0}
+.status{font-size:12px;color:#aaa;padding:8px 0}.status strong{color:#e8c45b}
+.futures{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.fut{border:1px solid var(--line);border-radius:8px;background:#111;padding:10px}
+.fut b{display:block;color:var(--gold);margin-bottom:7px}.fut div{display:flex;justify-content:space-between;font-size:13px;padding:3px 0}
+button{border:1px solid var(--gold);background:#241b08;color:var(--gold);border-radius:6px;padding:8px 12px;font-weight:800}
+.adminbar{display:flex;justify-content:flex-end;margin:5px 0}
+.modal{display:none;position:fixed;inset:0;background:#000d;z-index:5;overflow:auto;padding:18px}
+.dialog{max-width:540px;margin:20px auto;background:#141414;border:1px solid var(--gold);border-radius:10px;padding:16px}
+.dialog h2{color:var(--gold);font-size:18px;margin:0 0 12px}
+label{display:block;color:#ddd;font-size:12px;margin:10px 0 4px}
+input{width:100%;padding:9px;border-radius:5px;border:1px solid #555;background:#050505;color:white}
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.actions{display:flex;gap:8px;margin-top:14px}.actions button{flex:1}
+.err{color:#ff8d8d;font-size:12px;min-height:18px}
+@media(max-width:560px){.grid{grid-template-columns:1fr 1fr}.value{font-size:16px}table{font-size:11px}td,th{padding:8px 4px}.hide-mobile{display:none}}
+</style>
+</head>
+<body>
+<header><div class="crown">👑</div><div class="logo">AJ</div><div class="brand">AMIT JEWELLERS</div><div class="phone">☎ 843 030 1010</div></header>
+<div class="top">LIVE MARKET RATES • SARAF BAZAR, ALIGARH</div>
+<main class="wrap">
+<div class="adminbar"><button id="openAdmin">मालिक / Admin Control</button></div>
+<div class="grid">
+ <div class="card"><h3>GOLD SPOT · USD/OZ</h3><div class="value" id="spotGold">—</div><div class="small">International Spot</div></div>
+ <div class="card"><h3>SILVER SPOT · USD/OZ</h3><div class="value" id="spotSilver">—</div><div class="small">International Spot</div></div>
+ <div class="card"><h3>USD / INR</h3><div class="value" id="usdInr">—</div><div class="small">Exchange Rate</div></div>
+</div>
+<div class="section">
+ <div class="section-title">GOLD JEWELLERY RATES (₹ / 10 ग्राम)</div>
+ <table><thead><tr><th>कैरेट</th><th>मेकिंग सहित</th><th>GST सहित</th></tr></thead><tbody id="goldRows"><tr><td colspan="3">अधिकृत लाइव डेटा की प्रतीक्षा है…</td></tr></tbody></table>
+</div>
+<div class="section">
+ <div class="section-title">SILVER RATES (₹ / किलो)</div>
+ <table><thead><tr><th>प्रोडक्ट</th><th>मेकिंग सहित</th><th>GST सहित</th></tr></thead><tbody id="silverRows"><tr><td colspan="3">अधिकृत लाइव डेटा की प्रतीक्षा है…</td></tr></tbody></table>
+</div>
+<div class="section">
+ <div class="section-title">MCX FUTURES</div>
+ <div class="futures">
+  <div class="fut"><b>GOLD FUTURE</b><div><span>Last</span><strong id="mcxGold">—</strong></div><div><span>Bid / Ask</span><strong id="goldBidAsk">—</strong></div></div>
+  <div class="fut"><b>SILVER FUTURE</b><div><span>Last</span><strong id="mcxSilver">—</strong></div><div><span>Bid / Ask</span><strong id="silverBidAsk">—</strong></div></div>
+ </div>
+</div>
+<div class="status" id="status">डेटा स्थिति: <strong>कनेक्शन सेटअप बाकी है</strong></div>
+<div class="note">रेट अधिकृत डेटा प्रदाता से मिलने पर ही दिखेंगे। डेटा बंद/पुराना होने पर पिछला रेट लाइव बताकर नहीं दिखाया जाएगा। सोने का भाव ₹/10 ग्राम और चाँदी का भाव ₹/किलो में है। GST और मेकिंग प्रतिशत Admin Control से बदले जा सकते हैं।</div>
+</main>
+<div class="modal" id="adminModal"><div class="dialog">
+<h2>AMIT JEWELLERS — Admin Control</h2>
+<div id="loginArea"><label>Admin Password</label><input id="adminPassword" type="password" autocomplete="current-password"><div class="err" id="loginErr"></div><div class="actions"><button id="loginBtn">लॉगिन</button><button id="closeLogin">बंद करें</button></div></div>
+<div id="settingsArea" style="display:none">
+ <div class="cols">
+  <div><label>Gold Badla (₹ / 10g)</label><input id="goldBadla" type="number" step="0.01"></div>
+  <div><label>Silver Badla (₹ / kg)</label><input id="silverBadla" type="number" step="0.01"></div>
+  <div><label>18K Making %</label><input id="making18" type="number" step="0.01"></div>
+  <div><label>20K Making %</label><input id="making20" type="number" step="0.01"></div>
+  <div><label>22K Making %</label><input id="making22" type="number" step="0.01"></div>
+  <div><label>24K Making %</label><input id="making24" type="number" step="0.01"></div>
+  <div><label>Silver Making %</label><input id="silverMaking" type="number" step="0.01"></div>
+  <div><label>GST %</label><input id="gstPercent" type="number" step="0.01"></div>
+ </div>
+ <div class="actions"><button id="saveSettings">सेटिंग सेव करें</button><button id="logoutBtn">लॉगआउट</button></div><div class="err" id="saveErr"></div>
+</div>
+</div></div>
+<script>
+const $=id=>document.getElementById(id);
+let adminToken='', latest=null, settings=null;
+const money=n=>Number.isFinite(Number(n))?'₹'+Number(n).toLocaleString('en-IN',{maximumFractionDigits:2}):'—';
+const num=n=>Number.isFinite(Number(n))?Number(n).toLocaleString('en-IN',{maximumFractionDigits:2}):'—';
+function row(label,base,making,gst){
+ if(!Number.isFinite(base)) return `<tr><td>${label}</td><td>—</td><td>—</td></tr>`;
+ const withMaking=base*(1+making/100), withGst=withMaking*(1+gst/100);
+ return `<tr><td>${label}</td><td>${money(withMaking)}</td><td>${money(withGst)}</td></tr>`;
+}
+function render(){
+ if(!latest||!latest.mcx||!latest.mcx.gold||!latest.mcx.silver){$('status').innerHTML='डेटा स्थिति: <strong>MCX लाइव फीड उपलब्ध नहीं</strong>';return;}
+ const s=settings||{};
+ const goldBase=Number(latest.mcx.gold.last)+Number(s.goldBadla||0);
+ const silverBase=Number(latest.mcx.silver.last)+Number(s.silverBadla||0);
+ const gst=Number(s.gstPercent??3);
+ $('goldRows').innerHTML=[
+  row('24K / 999',goldBase,Number(s.making24||0),gst),
+  row('22K',goldBase*22/24,Number(s.making22||0),gst),
+  row('20K',goldBase*20/24,Number(s.making20||0),gst),
+  row('18K',goldBase*18/24,Number(s.making18||0),gst)
+ ].join('');
+ $('silverRows').innerHTML=[
+  row('Silver 999 RTGS',silverBase+Number(s.silverRtgsAdd||0),Number(s.silverMaking||0),gst),
+  row('Silver 999 · 1 KG',silverBase,Number(s.silverMaking||0),gst)
+ ].join('');
+ $('spotGold').textContent=latest.spot?.goldUsdOz==null?'—':'$'+num(latest.spot.goldUsdOz);
+ $('spotSilver').textContent=latest.spot?.silverUsdOz==null?'—':'$'+num(latest.spot.silverUsdOz);
+ $('usdInr').textContent=latest.fx?.usdInr==null?'—':'₹'+num(latest.fx.usdInr);
+ $('mcxGold').textContent=money(latest.mcx.gold.last);
+ $('goldBidAsk').textContent=`${num(latest.mcx.gold.bid)} / ${num(latest.mcx.gold.ask)}`;
+ $('mcxSilver').textContent=money(latest.mcx.silver.last);
+ $('silverBidAsk').textContent=`${num(latest.mcx.silver.bid)} / ${num(latest.mcx.silver.ask)}`;
+ const stamp=latest.timestamp?new Date(latest.timestamp).toLocaleString('hi-IN'):'समय उपलब्ध नहीं';
+ $('status').innerHTML=`डेटा स्थिति: <strong>लाइव फीड से प्राप्त</strong> · अपडेट: ${stamp}`;
+}
+async function loadMarket(){
+ try{
+  const r=await fetch('/api/market-data',{cache:'no-store'});const d=await r.json();
+  if(!r.ok)throw new Error(d.error||'Market feed unavailable');
+  latest=d;render();
+ }catch(e){$('status').innerHTML=`डेटा स्थिति: <strong>फीड कनेक्शन नहीं</strong> · ${e.message}`}
+}
+async function api(path,opts={}){const r=await fetch(path,{...opts,headers:{'Content-Type':'application/json','x-admin-password':adminToken,...(opts.headers||{})}});const d=await r.json();if(!r.ok)throw new Error(d.error||'Request failed');return d}
+$('openAdmin').onclick=()=>{$('adminModal').style.display='block';$('loginArea').style.display=adminToken?'none':'block';$('settingsArea').style.display=adminToken?'block':'none';if(adminToken)loadSettings()};
+$('closeLogin').onclick=()=>$('adminModal').style.display='none';
+$('loginBtn').onclick=async()=>{adminToken=$('adminPassword').value;try{await loadSettings();$('loginArea').style.display='none';$('settingsArea').style.display='block';$('loginErr').textContent=''}catch(e){adminToken='';$('loginErr').textContent='पासवर्ड गलत या सर्वर उपलब्ध नहीं: '+e.message}};
+async function loadSettings(){settings=await api('/api/settings');for(const k of ['goldBadla','silverBadla','making18','making20','making22','making24','silverMaking','gstPercent'])$(k).value=settings[k]??0;render()}
+$('saveSettings').onclick=async()=>{try{const v={};for(const k of ['goldBadla','silverBadla','making18','making20','making22','making24','silverMaking','gstPercent'])v[k]=Number($(k).value);settings=await api('/api/settings',{method:'PUT',body:JSON.stringify(v)});$('saveErr').textContent='सेटिंग सेव हो गई';render()}catch(e){$('saveErr').textContent=e.message}};
+$('logoutBtn').onclick=()=>{adminToken='';$('settingsArea').style.display='none';$('loginArea').style.display='block';$('adminPassword').value='';};
+loadMarket();setInterval(loadMarket,3000);
+</script>
+</body></html>
