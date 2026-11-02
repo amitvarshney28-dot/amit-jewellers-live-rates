@@ -21,12 +21,12 @@ footer{text-align:center;padding:24px;color:var(--muted);font-size:13px}
 <header><h1>AMIT JEWELLERS</h1><p>सोना • चाँदी • आभूषण | 8430301010</p><p class="muted">Sarafa Complex, Phool Chowk, Sarafa Bazar, Aligarh</p></header>
 <main>
 <div class="notice"><b>महत्वपूर्ण:</b> नीचे Spot Reference दिखाया जाता है, MCX Futures का लाइव भाव नहीं। जब तक सत्यापित बाजार डेटा उपलब्ध न हो, कोई अनुमानित/बनावटी भाव नहीं दिखाया जाएगा। अंतिम खरीद-बिक्री भाव दुकान से पुष्टि करें।</div>
-<section class="card" style="margin-top:14px"><div class="label">आपका मोबाइल MCX डेमो</div><h2 style="margin:8px 0">MCX Gold &amp; Silver Futures</h2><div class="grid" style="margin:10px 0"><div><div class="label">Gold Futures LTP</div><div class="price" id="mcxGold">जाँच जारी…</div></div><div><div class="label">Silver Futures LTP</div><div class="price" id="mcxSilver">जाँच जारी…</div></div></div><div class="muted" id="mcxStatus">RMoney Market Data API कनेक्शन की प्रतीक्षा।</div></section><div class="grid">
+<section class="card" style="margin-top:14px"><div class="label">आपके डेमो का दूसरा भाव</div><h2 style="margin:8px 0">भारत अनुमानित Spot Reference</h2><div class="grid" style="margin:10px 0"><div><div class="label">अनुमानित Gold / 10 ग्राम</div><div class="price" id="indiaGold">गणना जारी…</div></div><div><div class="label">अनुमानित Silver / 1 किलो</div><div class="price" id="indiaSilver">गणना जारी…</div></div></div><div class="muted" id="indiaStatus">यह MCX Futures LTP नहीं है। Duty और landed cost ज्वेलर सेटिंग में बदलें।</div></section><div class="grid">
 <div class="card"><div class="label">Gold Spot Reference / 10 ग्राम</div><div class="price" id="gold">लोड हो रहा है…</div></div>
 <div class="card"><div class="label">Silver Spot Reference / 1 किलो</div><div class="price" id="silver">लोड हो रहा है…</div></div>
 <div class="card"><div class="label">डेटा स्थिति</div><div id="status">जाँच जारी…</div><div class="muted" id="updated"></div></div>
 </div>
-<h2>अनुमानित दुकान गणना (Spot + Badla + Making)</h2>
+<h2>अनुमानित दुकान गणना (भारत Spot + Badla + Making)</h2>
 <p class="muted">ये गणना तभी उपलब्ध होगी जब सत्यापित INR Spot डेटा आएगा। 22K के लिए 916 शुद्धता और 18K के लिए 750 शुद्धता का अनुपात लगाया गया है।</p>
 <table><thead><tr><th>धातु / कैरेट</th><th>बिना GST</th><th>Making सहित + GST</th></tr></thead><tbody id="rates"><tr><td colspan="3">डेटा उपलब्ध होने की प्रतीक्षा…</td></tr></tbody></table>
 <div style="margin-top:18px"><button onclick="adminLogin()">ज्वेलर सेटिंग</button></div>
@@ -34,30 +34,30 @@ footer{text-align:center;padding:24px;color:var(--muted);font-size:13px}
 <h2>ज्वेलर सेटिंग</h2><p class="muted">पासवर्ड केवल इसी डिवाइस के इस सत्र में रखा जाता है।</p>
 <div class="fields" id="fields"></div><p><button onclick="saveSettings()">सेटिंग सेव करें</button> <span id="saveStatus" class="muted"></span></p>
 </section>
-</main><footer>AMIT JEWELLERS • Aligarh<br><a href="https://goldprice.corgano.com/" target="_blank" rel="noopener">Gold price data by Corgano</a> · <a href="https://silverprice.corgano.com/" target="_blank" rel="noopener">Silver price data by Corgano</a><br><span class="muted">अंतरराष्ट्रीय Spot Reference; MCX Futures नहीं। भाव संकेतात्मक हैं।</span></footer>
+</main><footer>AMIT JEWELLERS • Aligarh<br><a href="https://goldprice.corgano.com/" target="_blank" rel="noopener">Gold price data by Corgano</a> · <a href="https://silverprice.corgano.com/" target="_blank" rel="noopener">Silver price data by Corgano</a><br><span class="muted">Spot से निकला अनुमान; MCX Futures नहीं। Duty/लागत की दरें खुद सत्यापित करें। भाव संकेतात्मक हैं।</span></footer>
 <script>
-let token="", settings=null, market=null;
-const keys=[["goldBadla","Gold Badla ₹/10g"],["silverBadla","Silver Badla ₹/kg"],["making18","18K Making ₹/10g"],["making20","20K Making ₹/10g"],["making22","22K Making ₹/10g"],["making24","24K Making ₹/10g"],["silverMaking","Silver Making ₹/kg"],["gstPercent","GST %"],["silverRtgsAdd","Silver RTGS Add ₹/kg"]];
+let token="", settings=null, market=null, estimate=null;
+const keys=[["goldBadla","Gold Badla ₹/10g"],["silverBadla","Silver Badla ₹/kg"],["making18","18K Making ₹/10g"],["making20","20K Making ₹/10g"],["making22","22K Making ₹/10g"],["making24","24K Making ₹/10g"],["silverMaking","Silver Making ₹/kg"],["gstPercent","GST %"],["silverRtgsAdd","Silver RTGS Add ₹/kg"],["goldImportDutyPercent","Gold Duty % (खुद सेट करें)"],["silverImportDutyPercent","Silver Duty % (खुद सेट करें)"],["goldLandedCostPer10g","Gold अन्य लागत ₹/10g"],["silverLandedCostPerKg","Silver अन्य लागत ₹/kg"]];
 const money=n=>Number.isFinite(n)?"₹"+Math.round(n).toLocaleString("en-IN"):"—";
 async function load(){
- loadMcxStatus();
+
  try{
  const r=await fetch("/api/market-data"); const d=await r.json(); if(!r.ok||!d.available)throw Error(d.error||"डेटा उपलब्ध नहीं");
  market=d; document.getElementById("gold").textContent=money(d.goldPer10g);document.getElementById("silver").textContent=money(d.silverPerKg);
  document.getElementById("status").textContent="Spot reference उपलब्ध (MCX नहीं)";document.getElementById("updated").textContent="अपडेट: "+new Date(d.timestamp).toLocaleString("hi-IN");
- await loadPublicSettings(); render();
+ await loadPublicSettings(); await loadIndiaEstimate(); render();
  }catch(e){market=null;document.getElementById("gold").textContent="उपलब्ध नहीं";document.getElementById("silver").textContent="उपलब्ध नहीं";document.getElementById("status").textContent="डेटा सत्यापित नहीं";document.getElementById("updated").textContent=e.message;document.getElementById("rates").innerHTML='<tr><td colspan="3">कोई बनावटी भाव नहीं दिखाया गया।</td></tr>'}
 }
 async function loadPublicSettings(){const r=await fetch("/api/public-settings");settings=await r.json()}
 function render(){
  const rows=[]; const base=market.goldPer10g+settings.goldBadla;
  [[18,.75,settings.making18],[20,.8333,settings.making20],[22,.916,settings.making22],[24,1,settings.making24]].forEach(([k,p,m])=>{const raw=base*p;const withMaking=raw+m;const gst=withMaking*(1+settings.gstPercent/100);rows.push('<tr><td>Gold '+k+'K</td><td>'+money(raw)+'</td><td>'+money(gst)+'</td></tr>')});
- const silver=market.silverPerKg+settings.silverBadla+settings.silverRtgsAdd;rows.push('<tr><td>Silver 999 / kg</td><td>'+money(silver)+'</td><td>'+money((silver+settings.silverMaking)*(1+settings.gstPercent/100))+'</td></tr>');
+ const silver=(estimate?estimate.silverPerKg:market.silverPerKg)+settings.silverBadla+settings.silverRtgsAdd;rows.push('<tr><td>Silver 999 / kg</td><td>'+money(silver)+'</td><td>'+money((silver+settings.silverMaking)*(1+settings.gstPercent/100))+'</td></tr>');
  document.getElementById("rates").innerHTML=rows.join("");
 }
 async function adminLogin(){const p=prompt("ज्वेलर एडमिन पासवर्ड दर्ज करें");if(!p)return;token=p;try{const r=await fetch("/api/settings",{headers:{Authorization:"Bearer "+token}});if(!r.ok)throw Error("पासवर्ड गलत है या सर्वर पर ADMIN_PASSWORD सेट नहीं है");settings=await r.json();document.getElementById("admin").style.display="block";document.getElementById("fields").innerHTML=keys.map(([k,l])=>'<div class="field"><label>'+l+'</label><input type="number" min="0" step="any" id="f_'+k+'" value="'+settings[k]+'"></div>').join("");}catch(e){token="";alert(e.message)}}
-async function saveSettings(){const s={};keys.forEach(([k])=>s[k]=Number(document.getElementById("f_"+k).value));const r=await fetch("/api/settings",{method:"PUT",headers:{"Content-Type":"application/json",Authorization:"Bearer "+token},body:JSON.stringify(s)});const d=await r.json();document.getElementById("saveStatus").textContent=r.ok?"सेव हो गया":"त्रुटि: "+(d.error||"");if(r.ok){settings=d.settings;render()}}
-async function loadMcxStatus(){try{const r=await fetch("/api/mcx-market-data");const d=await r.json();if(!r.ok||!d.available)throw Error(d.message||"MCX API अभी सेट नहीं है");document.getElementById("mcxGold").textContent=money(d.goldLtp);document.getElementById("mcxSilver").textContent=money(d.silverLtp);document.getElementById("mcxStatus").textContent="MCX Futures • अपडेट: "+new Date(d.timestamp).toLocaleString("hi-IN");}catch(e){document.getElementById("mcxGold").textContent="उपलब्ध नहीं";document.getElementById("mcxSilver").textContent="उपलब्ध नहीं";document.getElementById("mcxStatus").textContent=e.message}}
+async function saveSettings(){const s={};keys.forEach(([k])=>s[k]=Number(document.getElementById("f_"+k).value));const r=await fetch("/api/settings",{method:"PUT",headers:{"Content-Type":"application/json",Authorization:"Bearer "+token},body:JSON.stringify(s)});const d=await r.json();document.getElementById("saveStatus").textContent=r.ok?"सेव हो गया":"त्रुटि: "+(d.error||"");if(r.ok){settings=d.settings;await loadIndiaEstimate();render()}}
+
 if("serviceWorker" in navigator)window.addEventListener("load",()=>navigator.serviceWorker.register("/sw.js").catch(()=>{}));
-load();setInterval(load,60000);setInterval(loadMcxStatus,5000);
+load();setInterval(load,60000);
 </script></body></html>
