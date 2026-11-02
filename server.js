@@ -25,6 +25,7 @@ async function getMarketData(){
  try{return await inFlight}finally{inFlight=null}
 }
 app.get("/health",(q,s)=>s.json({ok:true}));
+app.get("/api/mcx-market-data",(q,s)=>s.status(503).json({available:false,message:"RMoney Market Data API credentials, XTS login/session flow and MCX instrument tokens are not configured yet. No simulated or spot price is shown as MCX."}));
 app.get("/api/market-data",async(q,s)=>{try{s.set("Cache-Control","public, max-age=30");s.json(await getMarketData())}catch(e){s.status(503).json({available:false,isMCX:false,error:e.message})}});
 app.get("/api/public-settings",(q,s)=>{const x=read();s.json(x)});
 app.get("/api/settings",auth,(q,s)=>s.json(read()));
