@@ -3,7 +3,7 @@
 Mobile-friendly customer dashboard and jeweller settings.
 
 ## Important market-data limitation
-The included adapter is intended for an INR-denominated international spot reference only. It is **not MCX futures data**. It refuses to display a price unless the provider response includes INR currency identification and numeric XAU/XAG fields. No random or hardcoded fallback prices are used. The default endpoint response structure has not yet been confirmed against a live provider contract; check the provider documentation. If the endpoint does not return the expected fields, the dashboard will correctly show unavailable rather than invent a quote.
+The included adapter uses Corgano's free Gold and Silver latest-price JSON endpoints with `currency=INR`. The documented response fields used are `data.currencies.INR.per_gram` for gold, `data.currencies.INR.per_kg` for silver, and `data.as_of` for the timestamp. This is an international **spot reference**, not MCX futures or an IBJA retail benchmark. Corgano documents updates about once a minute, no API key, and per-IP limits of 10 requests/minute, 60/hour and 500/day. Attribution links are required and are shown in the dashboard. The app validates positive numeric prices and timestamps and shows unavailable on provider errors; it never substitutes random or hardcoded rates. Provider figures are indicative and may be delayed.
 
 ## Run
 Requires Node.js 20+. Run `npm install`, set `ADMIN_PASSWORD` to a unique secret of at least 12 characters, then `npm start`. Open the service URL in a browser.
