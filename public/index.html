@@ -1,41 +1,66 @@
 <!doctype html>
-<html lang="hi">
-<head>
+<html lang="hi"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="theme-color" content="#101014"><meta name="mobile-web-app-capable" content="yes"><link rel="manifest" href="/manifest.webmanifest"><title>AMIT JEWELLERS | Live Rates</title>
+<meta name="theme-color" content="#050505"><meta name="mobile-web-app-capable" content="yes"><link rel="manifest" href="/manifest.webmanifest">
+<title>AMIT JEWELLERS | Live Rates</title>
 <style>
-:root{color-scheme:dark;--bg:#101014;--panel:#1b1b22;--gold:#d8b45a;--muted:#aaa}*{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:#f7f3e9;font-family:Arial,sans-serif}
-header{text-align:center;padding:24px 14px;background:linear-gradient(135deg,#17131d,#292116);border-bottom:1px solid #5a4724}
-h1{margin:0;color:var(--gold);letter-spacing:2px;font-size:clamp(24px,5vw,34px)}header p{margin:8px 0 0;color:#ddd}
-main{max-width:900px;margin:auto;padding:16px}.notice{background:#29251b;border:1px solid #6b5628;color:#f4dfaa;padding:12px;border-radius:10px;font-size:14px;line-height:1.5}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin:16px 0}
-.card{background:var(--panel);padding:16px;border:1px solid #34313a;border-radius:12px}.label{color:var(--muted);font-size:14px}.price{font-size:26px;color:var(--gold);font-weight:bold;margin-top:8px}
-h2{font-size:18px;color:var(--gold);margin:22px 0 10px}table{width:100%;border-collapse:collapse;background:var(--panel);border-radius:10px;overflow:hidden}
-th,td{text-align:left;padding:12px 9px;border-bottom:1px solid #393640;font-size:14px}th{color:var(--gold)}.muted{color:var(--muted);font-size:12px}
-button{background:var(--gold);border:0;border-radius:8px;padding:10px 14px;font-weight:bold;cursor:pointer}input{background:#101014;color:white;border:1px solid #555;padding:9px;border-radius:7px;width:100%}
-.admin{display:none;background:var(--panel);padding:14px;border-radius:12px;margin-top:20px}.fields{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px}.field label{font-size:12px;color:var(--muted)}
-footer{text-align:center;padding:24px;color:var(--muted);font-size:13px}
+:root{color-scheme:dark;--gold:#e5c65d;--gold2:#f8e58a;--line:#b99b42;--black:#050505;--red:#d91f2b;--green:#078b20;--muted:#b9b3a1}
+*{box-sizing:border-box}body{margin:0;background:var(--black);color:#fff;font-family:Arial,Helvetica,sans-serif;padding-bottom:78px}
+header{height:190px;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#000;text-align:center;border-bottom:1px solid #29220d}
+.logo{display:flex;align-items:center;gap:12px;color:var(--gold2)}.monogram{font-family:Georgia,serif;font-size:66px;line-height:1;border:2px solid var(--gold);border-radius:50%;width:78px;height:78px;display:grid;place-items:center;text-shadow:0 0 10px #b99b42}
+h1{font-family:Georgia,serif;letter-spacing:4px;color:var(--gold2);font-size:clamp(25px,7vw,36px);margin:0}.brand-sub{font-family:Georgia,serif;font-size:20px;letter-spacing:3px;color:var(--gold2);margin-top:2px}
+.contact{font-size:12px;color:#c9c9c9;margin-top:12px}
+.banner{background:linear-gradient(90deg,#d6b94d,#fff09b,#d6b94d);color:#080808;text-align:center;font-weight:900;font-size:clamp(15px,4.3vw,21px);padding:10px 5px}
+main{max-width:760px;margin:auto;padding:12px 9px}
+.spot-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:10px}
+.spot-card,.future-card{border:2px solid var(--line);border-radius:9px;padding:7px;background:#030303;min-width:0;box-shadow:inset 0 0 0 1px #352b12}
+.gold-head{background:linear-gradient(#fff0a0,#d8b84b);color:#080808;text-align:center;border-radius:7px;font-weight:900;padding:8px 2px;font-size:clamp(12px,3.5vw,16px);white-space:nowrap}
+.spot-value{background:var(--red);border-radius:8px;text-align:center;padding:10px 1px;margin:7px 0;font-size:clamp(15px,4vw,22px);font-weight:800;overflow-wrap:anywhere}
+.spot-value.neutral{background:#151515;color:var(--gold2)}
+.spot-meta{display:flex;justify-content:space-between;gap:3px;font-size:clamp(10px,3vw,14px);font-weight:800;padding:2px 0;color:#fff}
+.availability{text-align:center;color:var(--gold2);font-weight:900;font-style:italic;font-size:clamp(19px,5vw,26px);margin:45px 8px 48px;line-height:1.45}
+.future-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.future-card{padding:8px}
+.future-title{background:linear-gradient(#fff0a0,#d8b84b);color:#080808;text-align:center;font-weight:900;font-size:clamp(14px,4vw,20px);border-radius:7px;padding:8px 2px}
+.bidask{display:grid;grid-template-columns:1fr 1fr;gap:8px;text-align:center;margin-top:12px}
+.bidask .cap{font-size:16px;margin-bottom:5px}
+.future-val{background:#161616;border:1px solid #514322;border-radius:7px;color:var(--gold2);font-size:clamp(15px,4vw,21px);font-weight:800;padding:9px 2px;min-height:40px}
+.future-val.na{color:#aaa;background:#171717;font-size:14px}
+.lowhigh{display:flex;justify-content:space-between;font-size:clamp(11px,3.2vw,14px);font-weight:800;margin:7px 2px 2px;gap:4px}
+.section{margin-top:28px}.section h2{font-size:19px;color:var(--gold2)}
+.note{color:#c5bdab;font-size:12px;line-height:1.5;margin:8px 2px}
+table{width:100%;border-collapse:collapse;background:#111;border:1px solid #6c5826}th,td{text-align:left;padding:11px 7px;border-bottom:1px solid #3a321e;font-size:12px}th{color:var(--gold2)}
+button{background:linear-gradient(#fff0a0,#d8b84b);color:#080808;border:0;border-radius:7px;padding:10px 14px;font-weight:900}
+.admin{display:none;background:#151515;border:1px solid var(--line);border-radius:10px;padding:12px;margin-top:16px}.fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.field label{display:block;font-size:11px;color:#c9bd9a}.field input{width:100%;background:#050505;color:white;border:1px solid #6d5a2b;padding:8px;border-radius:6px;margin-top:4px}
+footer{text-align:center;color:#aaa;font-size:12px;padding:22px 10px}footer a{color:var(--gold2)}
+.bottom-nav{position:fixed;bottom:0;left:0;right:0;background:#000;border-top:1px solid #6e5a25;display:grid;grid-template-columns:repeat(3,1fr);padding:8px 0 5px;z-index:5}
+.bottom-nav a{color:var(--gold2);text-decoration:none;text-align:center;font-size:12px;font-weight:bold}.nav-icon{display:block;font-size:25px;margin-bottom:3px}
+@media(max-width:360px){main{padding-left:6px;padding-right:6px}.spot-grid{gap:5px}.spot-card{padding:5px}.gold-head{font-size:11px}.spot-value{font-size:14px}.future-grid{gap:7px}}
 </style></head>
 <body>
-<header><h1>AMIT JEWELLERS</h1><p>सोना • चाँदी • आभूषण | 8430301010</p><p class="muted">Sarafa Complex, Phool Chowk, Sarafa Bazar, Aligarh</p></header>
+<header><div class="logo"><div class="monogram">AJ</div><div><h1>AMIT</h1><div class="brand-sub">JEWELLERS</div></div></div><div class="contact">सोना • चाँदी • आभूषण | 8430301010<br>Sarafa Complex, Phool Chowk, Sarafa Bazar, Aligarh</div></header>
+<div class="banner">LIVE SPOT REFERENCE • अपडेट लगभग हर 5 मिनट</div>
 <main>
-<div class="notice"><b>महत्वपूर्ण:</b> नीचे Spot Reference दिखाया जाता है, MCX Futures का लाइव भाव नहीं। जब तक सत्यापित बाजार डेटा उपलब्ध न हो, कोई अनुमानित/बनावटी भाव नहीं दिखाया जाएगा। अंतिम खरीद-बिक्री भाव दुकान से पुष्टि करें।</div>
-<section class="card" style="margin-top:14px"><div class="label">आपके डेमो का दूसरा भाव</div><h2 style="margin:8px 0">भारत अनुमानित Spot Reference</h2><div class="grid" style="margin:10px 0"><div><div class="label">अनुमानित Gold / 10 ग्राम</div><div class="price" id="indiaGold">गणना जारी…</div></div><div><div class="label">अनुमानित Silver / 1 किलो</div><div class="price" id="indiaSilver">गणना जारी…</div></div></div><div class="muted" id="indiaStatus">यह MCX Futures LTP नहीं है। Duty और landed cost ज्वेलर सेटिंग में बदलें।</div></section><div class="grid">
-<div class="card"><div class="label">Gold Spot Reference / 10 ग्राम</div><div class="price" id="gold">लोड हो रहा है…</div></div>
-<div class="card"><div class="label">Silver Spot Reference / 1 किलो</div><div class="price" id="silver">लोड हो रहा है…</div></div>
-<div class="card"><div class="label">डेटा स्थिति</div><div id="status">जाँच जारी…</div><div class="muted" id="updated"></div></div>
+<div class="spot-grid" id="live">
+ <div class="spot-card"><div class="gold-head">GOLD SPOT</div><div class="spot-value" id="gold">लोड…</div><div class="spot-meta"><span>₹ / 10 ग्राम</span><span>Spot</span></div></div>
+ <div class="spot-card"><div class="gold-head">SILVER SPOT</div><div class="spot-value" id="silver">लोड…</div><div class="spot-meta"><span>₹ / किलो</span><span>Spot</span></div></div>
+ <div class="spot-card"><div class="gold-head">INR SPOT</div><div class="spot-value neutral" id="inrSpot">उपलब्ध नहीं</div><div class="spot-meta"><span>USD / INR</span><span>Feed नहीं</span></div></div>
 </div>
-<section class="card"><h2 style="margin-top:0">MCX Gold / Silver Futures</h2><div class="label">असली MCX लाइव चार्ट अभी कनेक्ट नहीं है</div><p class="muted">पहले दिख रहा बाहरी चार्ट सही MCX डेटा की पुष्टि नहीं कर रहा था, इसलिए गलत Apple Inc. चार्ट हटाया गया है। यहाँ कोई नकली MCX भाव या चार्ट नहीं दिखाया जाएगा।</p></section>
-<h2>अनुमानित दुकान गणना (भारत Spot + Badla + Making)</h2>
-<p class="muted">ये गणना तभी उपलब्ध होगी जब सत्यापित INR Spot डेटा आएगा। 22K के लिए 916 शुद्धता और 18K के लिए 750 शुद्धता का अनुपात लगाया गया है।</p>
-<table><thead><tr><th>धातु / कैरेट</th><th>बिना GST</th><th>Making सहित + GST</th></tr></thead><tbody id="rates"><tr><td colspan="3">डेटा उपलब्ध होने की प्रतीक्षा…</td></tr></tbody></table>
-<div style="margin-top:18px"><button onclick="adminLogin()">ज्वेलर सेटिंग</button></div>
-<section class="admin" id="admin">
-<h2>ज्वेलर सेटिंग</h2><p class="muted">पासवर्ड केवल इसी डिवाइस के इस सत्र में रखा जाता है।</p>
-<div class="fields" id="fields"></div><p><button onclick="saveSettings()">सेटिंग सेव करें</button> <span id="saveStatus" class="muted"></span></p>
-</section>
-</main><footer>AMIT JEWELLERS • Aligarh<br><a href="https://goldprice.corgano.com/" target="_blank" rel="noopener">Gold price data by Corgano</a> · <a href="https://silverprice.corgano.com/" target="_blank" rel="noopener">Silver price data by Corgano</a><br><span class="muted">Spot से निकला अनुमान; MCX Futures नहीं। Duty/लागत की दरें खुद सत्यापित करें। भाव संकेतात्मक हैं।</span></footer>
+<div class="availability" id="status">LIVE RATES STATUS CHECKING…<div class="note" id="updated"></div></div>
+<div class="future-grid">
+ <div class="future-card"><div class="future-title">GOLD FUTURE</div><div class="bidask"><div><div class="cap">Bid</div><div class="future-val na">उपलब्ध नहीं</div></div><div><div class="cap">Ask</div><div class="future-val na">उपलब्ध नहीं</div></div></div><div class="lowhigh"><span>L : —</span><span>H : —</span></div></div>
+ <div class="future-card"><div class="future-title">SILVER FUTURE</div><div class="bidask"><div><div class="cap">Bid</div><div class="future-val na">उपलब्ध नहीं</div></div><div><div class="cap">Ask</div><div class="future-val na">उपलब्ध नहीं</div></div></div><div class="lowhigh"><span>L : —</span><span>H : —</span></div></div>
+ <div class="future-card"><div class="future-title">GOLD NEXT</div><div class="bidask"><div><div class="cap">Bid</div><div class="future-val na">उपलब्ध नहीं</div></div><div><div class="cap">Ask</div><div class="future-val na">उपलब्ध नहीं</div></div></div><div class="lowhigh"><span>L : —</span><span>H : —</span></div></div>
+ <div class="future-card"><div class="future-title">SILVER NEXT</div><div class="bidask"><div><div class="cap">Bid</div><div class="future-val na">उपलब्ध नहीं</div></div><div><div class="cap">Ask</div><div class="future-val na">उपलब्ध नहीं</div></div></div><div class="lowhigh"><span>L : —</span><span>H : —</span></div></div>
+</div>
+<div class="section" id="rates-section"><h2>अनुमानित दुकान गणना</h2><p class="note">भारत अनुमानित Spot = अंतरराष्ट्रीय INR Spot + आपके सेट किए Duty प्रतिशत और अन्य लागत। यह MCX Futures भाव नहीं है।</p>
+<div class="spot-grid" style="grid-template-columns:repeat(2,minmax(0,1fr))"><div class="spot-card"><div class="gold-head">INDIA GOLD EST. / 10g</div><div class="spot-value neutral" id="indiaGold">—</div></div><div class="spot-card"><div class="gold-head">INDIA SILVER EST. / kg</div><div class="spot-value neutral" id="indiaSilver">—</div></div></div>
+<table><thead><tr><th>धातु / कैरेट</th><th>बिना GST</th><th>Making + GST</th></tr></thead><tbody id="rates"><tr><td colspan="3">डेटा उपलब्ध होने की प्रतीक्षा…</td></tr></tbody></table>
+<div style="margin-top:16px"><button onclick="adminLogin()">ज्वेलर सेटिंग</button></div>
+<section class="admin" id="admin"><h2>ज्वेलर सेटिंग</h2><p class="note">एडमिन पासवर्ड सर्वर पर सेट होना जरूरी है।</p><div class="fields" id="fields"></div><p><button onclick="saveSettings()">सेटिंग सेव करें</button> <span class="note" id="saveStatus"></span></p></section></div>
+</main>
+<footer>AMIT JEWELLERS • Aligarh<br><a href="https://goldprice.corgano.com/" target="_blank" rel="noopener">Gold data by Corgano</a> · <a href="https://silverprice.corgano.com/" target="_blank" rel="noopener">Silver data by Corgano</a><br>Spot Reference • MCX Futures डेटा कनेक्ट नहीं है।</footer>
+<nav class="bottom-nav"><a href="#live"><span class="nav-icon">⌁</span>Liverate</a><a href="#rates-section"><span class="nav-icon">♧</span>Rates</a><a href="#admin" onclick="adminLogin();return false"><span class="nav-icon">▦</span>Menu</a></nav>
 <script>
 let token="", settings=null, market=null, estimate=null;
 const keys=[["goldBadla","Gold Badla ₹/10g"],["silverBadla","Silver Badla ₹/kg"],["making18","18K Making ₹/10g"],["making20","20K Making ₹/10g"],["making22","22K Making ₹/10g"],["making24","24K Making ₹/10g"],["silverMaking","Silver Making ₹/kg"],["gstPercent","GST %"],["silverRtgsAdd","Silver RTGS Add ₹/kg"],["goldImportDutyPercent","Gold Duty % (खुद सेट करें)"],["silverImportDutyPercent","Silver Duty % (खुद सेट करें)"],["goldLandedCostPer10g","Gold अन्य लागत ₹/10g"],["silverLandedCostPerKg","Silver अन्य लागत ₹/kg"]];
@@ -62,4 +87,5 @@ async function saveSettings(){const s={};keys.forEach(([k])=>s[k]=Number(documen
 
 if("serviceWorker" in navigator)window.addEventListener("load",()=>navigator.serviceWorker.register("/sw.js").catch(()=>{}));
 load();setInterval(load,300000);
-</script></body></html>
+</script>
+</body></html>
