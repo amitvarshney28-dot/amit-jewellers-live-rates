@@ -20,3 +20,7 @@ Gold purity factors used: 18K 75%, 20K 83.33%, 22K 91.6%, 24K 100%. The dashboar
 
 ## Single-mobile MCX demo preparation
 The dashboard has a dedicated MCX Gold/Silver Futures panel and installable PWA shell. The MCX endpoint intentionally returns unavailable until the account-specific authorized RMoney XTS login/session flow, MCX instrument tokens and credentials are supplied. No spot, delayed or simulated price is represented as MCX. Keep API secrets only in private hosting environment variables, never in GitHub or chat. The PWA shell does not cache API data offline.
+
+
+## Single-mobile demo and India estimate
+The mobile PWA shows Corgano INR international spot reference and a separate India indicative estimate. Formula: Spot × (1 + user-entered duty percentage) + user-entered landed cost. Duty percentages and other landed costs default to zero; the jeweller must verify and enter applicable values. These defaults are not a statement of current Indian customs rates. This estimate is NOT MCX Futures LTP, not an exchange quote, and not a guaranteed retail/billing price. Genuine MCX prices require an authorized MCX/vendor feed. The MCX endpoint therefore remains unavailable rather than fabricating values. Keep secrets in private hosting environment variables, never in GitHub or chat. The PWA shell does not cache API data offline.
