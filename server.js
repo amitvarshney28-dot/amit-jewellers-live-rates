@@ -2,7 +2,7 @@ require("dotenv").config();
 const express=require("express"),fs=require("fs"),path=require("path");
 const app=express(),PORT=process.env.PORT||3000,FILE=path.join(__dirname,"settings.json");
 app.use(express.json({limit:"20kb"}));app.use(express.static(path.join(__dirname,"public")));
-const defaults={goldBadla:0,silverBadla:0,making18:0,making20:0,making22:0,making24:0,silverMaking:0,gstPercent:3,silverRtgsAdd:0};
+const defaults={goldBadla:0,silverBadla:0,making18:0,making20:0,making22:0,making24:0,silverMaking:0,gstPercent:3,silverRtgsAdd:0,goldImportDutyPercent:0,silverImportDutyPercent:0,goldLandedCostPer10g:0,silverLandedCostPerKg:0};
 function read(){try{return {...defaults,...JSON.parse(fs.readFileSync(FILE,"utf8"))}}catch{return {...defaults}}}
 function auth(req,res,next){const pass=process.env.ADMIN_PASSWORD,got=(req.get("authorization")||"").replace(/^Bearer /,"");if(!pass||pass.length<12)return res.status(503).json({error:"Secure ADMIN_PASSWORD (12+ characters) is not configured."});if(got!==pass)return res.status(401).json({error:"Unauthorized"});next()}
 const CACHE_MS=60_000;let marketCache=null,cacheAt=0,inFlight=null;
@@ -25,9 +25,9 @@ async function getMarketData(){
  try{return await inFlight}finally{inFlight=null}
 }
 app.get("/health",(q,s)=>s.json({ok:true}));
-app.get("/api/mcx-market-data",(q,s)=>s.status(503).json({available:false,message:"RMoney Market Data API credentials, XTS login/session flow and MCX instrument tokens are not configured yet. No simulated or spot price is shown as MCX."}));
+app.get("/api/mcx-market-data",(q,s)=>s.status(503).json({available:false,message:"असली MCX Futures डेटा फीड कनेक्ट नहीं है। नीचे दिया भारत अनुमानित Spot भाव MCX LTP नहीं है।"}));
 app.get("/api/market-data",async(q,s)=>{try{s.set("Cache-Control","public, max-age=30");s.json(await getMarketData())}catch(e){s.status(503).json({available:false,isMCX:false,error:e.message})}});
-app.get("/api/public-settings",(q,s)=>{const x=read();s.json(x)});
+app.get("/api/public-settings",(q,s)=>{const x=read();s.json(x)});\napp.get("/api/india-estimate",async(q,s)=>{try{const m=await getMarketData(),x=read();const gold=m.goldPer10g*(1+x.goldImportDutyPercent/100)+x.goldLandedCostPer10g;const silver=m.silverPerKg*(1+x.silverImportDutyPercent/100)+x.silverLandedCostPerKg;s.json({available:true,isMCX:false,label:"अनुमानित भारत Spot Reference",goldPer10g:gold,silverPerKg:silver,source:m.source,timestamp:m.timestamp,assumptions:{goldImportDutyPercent:x.goldImportDutyPercent,silverImportDutyPercent:x.silverImportDutyPercent,goldLandedCostPer10g:x.goldLandedCostPer10g,silverLandedCostPerKg:x.silverLandedCostPerKg}})}catch(e){s.status(503).json({available:false,isMCX:false,error:e.message})}});
 app.get("/api/settings",auth,(q,s)=>s.json(read()));
 app.put("/api/settings",auth,(q,s)=>{const o={};for(const k of Object.keys(defaults)){const n=Number(q.body?.[k]);if(!Number.isFinite(n)||n<0||n>1000000)return s.status(400).json({error:"Invalid numeric setting: "+k});o[k]=n}if(o.gstPercent>100)return s.status(400).json({error:"GST percent must be 0-100"});fs.writeFileSync(FILE,JSON.stringify(o,null,2));s.json({ok:true,settings:o})});
 app.listen(PORT,()=>console.log("AMIT JEWELLERS listening on "+PORT));
