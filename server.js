@@ -5,7 +5,7 @@ app.use(express.json({limit:"20kb"}));app.use(express.static(path.join(__dirname
 const defaults={goldBadla:0,silverBadla:0,making18:0,making20:0,making22:0,making24:0,silverMaking:0,gstPercent:3,silverRtgsAdd:0,goldImportDutyPercent:0,silverImportDutyPercent:0,goldLandedCostPer10g:0,silverLandedCostPerKg:0};
 function read(){try{return {...defaults,...JSON.parse(fs.readFileSync(FILE,"utf8"))}}catch{return {...defaults}}}
 function auth(req,res,next){const pass=process.env.ADMIN_PASSWORD,got=(req.get("authorization")||"").replace(/^Bearer /,"");if(!pass||pass.length<12)return res.status(503).json({error:"Secure ADMIN_PASSWORD (12+ characters) is not configured."});if(got!==pass)return res.status(401).json({error:"Unauthorized"});next()}
-const CACHE_MS=60_000;let marketCache=null,cacheAt=0,inFlight=null;
+const CACHE_MS=310_000;let marketCache=null,cacheAt=0,inFlight=null;
 async function fetchJson(url){const r=await fetch(url,{headers:{"Accept":"application/json","User-Agent":"AMIT-JEWELLERS-rate-dashboard/1.0"},signal:AbortSignal.timeout(12000)});if(!r.ok)throw Error("Corgano provider HTTP "+r.status);return r.json()}
 async function getMarketData(){
  if(marketCache&&Date.now()-cacheAt<CACHE_MS)return marketCache;
