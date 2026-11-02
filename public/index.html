@@ -49,8 +49,9 @@ async function load(){
  }catch(e){market=null;document.getElementById("gold").textContent="उपलब्ध नहीं";document.getElementById("silver").textContent="उपलब्ध नहीं";document.getElementById("status").textContent="डेटा सत्यापित नहीं";document.getElementById("updated").textContent=e.message;document.getElementById("rates").innerHTML='<tr><td colspan="3">कोई बनावटी भाव नहीं दिखाया गया।</td></tr>'}
 }
 async function loadPublicSettings(){const r=await fetch("/api/public-settings");settings=await r.json()}
+async function loadIndiaEstimate(){try{const r=await fetch("/api/india-estimate");const d=await r.json();if(!r.ok||!d.available)throw Error(d.error||"अनुमान उपलब्ध नहीं");estimate=d;document.getElementById("indiaGold").textContent=money(d.goldPer10g);document.getElementById("indiaSilver").textContent=money(d.silverPerKg);document.getElementById("indiaStatus").textContent="Spot + आपके सेट किए Duty % और अन्य लागत। यह MCX Futures LTP नहीं है।"}catch(e){estimate=null;document.getElementById("indiaGold").textContent="उपलब्ध नहीं";document.getElementById("indiaSilver").textContent="उपलब्ध नहीं";document.getElementById("indiaStatus").textContent=e.message}}
 function render(){
- const rows=[]; const base=market.goldPer10g+settings.goldBadla;
+ const rows=[]; const base=(estimate?estimate.goldPer10g:market.goldPer10g)+settings.goldBadla;
  [[18,.75,settings.making18],[20,.8333,settings.making20],[22,.916,settings.making22],[24,1,settings.making24]].forEach(([k,p,m])=>{const raw=base*p;const withMaking=raw+m;const gst=withMaking*(1+settings.gstPercent/100);rows.push('<tr><td>Gold '+k+'K</td><td>'+money(raw)+'</td><td>'+money(gst)+'</td></tr>')});
  const silver=(estimate?estimate.silverPerKg:market.silverPerKg)+settings.silverBadla+settings.silverRtgsAdd;rows.push('<tr><td>Silver 999 / kg</td><td>'+money(silver)+'</td><td>'+money((silver+settings.silverMaking)*(1+settings.gstPercent/100))+'</td></tr>');
  document.getElementById("rates").innerHTML=rows.join("");
