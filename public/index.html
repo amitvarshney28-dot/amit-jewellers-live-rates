@@ -66,5 +66,5 @@ async function adminLogin(){const p=prompt("ज्वेलर एडमिन �
 async function saveSettings(){const s={};keys.forEach(([k])=>s[k]=Number(document.getElementById("f_"+k).value));const r=await fetch("/api/settings",{method:"PUT",headers:{"Content-Type":"application/json",Authorization:"Bearer "+token},body:JSON.stringify(s)});const d=await r.json();document.getElementById("saveStatus").textContent=r.ok?"सेव हो गया":"त्रुटि: "+(d.error||"");if(r.ok){settings=d.settings;await loadIndiaEstimate();render()}}
 
 if("serviceWorker" in navigator)window.addEventListener("load",()=>navigator.serviceWorker.register("/sw.js").catch(()=>{}));
-load();setInterval(load,60000);
+load();setInterval(load,300000);
 </script></body></html>
