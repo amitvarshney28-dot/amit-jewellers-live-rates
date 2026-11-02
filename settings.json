@@ -7,5 +7,9 @@
   "making24": 0,
   "silverMaking": 0,
   "gstPercent": 3,
-  "silverRtgsAdd": 0
+  "silverRtgsAdd": 0,
+  "goldImportDutyPercent": 0,
+  "silverImportDutyPercent": 0,
+  "goldLandedCostPer10g": 0,
+  "silverLandedCostPerKg": 0
 }
