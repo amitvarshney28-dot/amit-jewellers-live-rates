@@ -2,7 +2,7 @@
 <html lang="hi">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="theme-color" content="#101014"><title>AMIT JEWELLERS | Live Rates</title>
+<meta name="theme-color" content="#101014"><meta name="mobile-web-app-capable" content="yes"><link rel="manifest" href="/manifest.webmanifest"><title>AMIT JEWELLERS | Live Rates</title>
 <style>
 :root{color-scheme:dark;--bg:#101014;--panel:#1b1b22;--gold:#d8b45a;--muted:#aaa}*{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:#f7f3e9;font-family:Arial,sans-serif}
@@ -21,7 +21,7 @@ footer{text-align:center;padding:24px;color:var(--muted);font-size:13px}
 <header><h1>AMIT JEWELLERS</h1><p>सोना • चाँदी • आभूषण | 8430301010</p><p class="muted">Sarafa Complex, Phool Chowk, Sarafa Bazar, Aligarh</p></header>
 <main>
 <div class="notice"><b>महत्वपूर्ण:</b> नीचे Spot Reference दिखाया जाता है, MCX Futures का लाइव भाव नहीं। जब तक सत्यापित बाजार डेटा उपलब्ध न हो, कोई अनुमानित/बनावटी भाव नहीं दिखाया जाएगा। अंतिम खरीद-बिक्री भाव दुकान से पुष्टि करें।</div>
-<div class="grid">
+<section class="card" style="margin-top:14px"><div class="label">आपका मोबाइल MCX डेमो</div><h2 style="margin:8px 0">MCX Gold &amp; Silver Futures</h2><div class="grid" style="margin:10px 0"><div><div class="label">Gold Futures LTP</div><div class="price" id="mcxGold">जाँच जारी…</div></div><div><div class="label">Silver Futures LTP</div><div class="price" id="mcxSilver">जाँच जारी…</div></div></div><div class="muted" id="mcxStatus">RMoney Market Data API कनेक्शन की प्रतीक्षा।</div></section><div class="grid">
 <div class="card"><div class="label">Gold Spot Reference / 10 ग्राम</div><div class="price" id="gold">लोड हो रहा है…</div></div>
 <div class="card"><div class="label">Silver Spot Reference / 1 किलो</div><div class="price" id="silver">लोड हो रहा है…</div></div>
 <div class="card"><div class="label">डेटा स्थिति</div><div id="status">जाँच जारी…</div><div class="muted" id="updated"></div></div>
@@ -40,6 +40,7 @@ let token="", settings=null, market=null;
 const keys=[["goldBadla","Gold Badla ₹/10g"],["silverBadla","Silver Badla ₹/kg"],["making18","18K Making ₹/10g"],["making20","20K Making ₹/10g"],["making22","22K Making ₹/10g"],["making24","24K Making ₹/10g"],["silverMaking","Silver Making ₹/kg"],["gstPercent","GST %"],["silverRtgsAdd","Silver RTGS Add ₹/kg"]];
 const money=n=>Number.isFinite(n)?"₹"+Math.round(n).toLocaleString("en-IN"):"—";
 async function load(){
+ loadMcxStatus();
  try{
  const r=await fetch("/api/market-data"); const d=await r.json(); if(!r.ok||!d.available)throw Error(d.error||"डेटा उपलब्ध नहीं");
  market=d; document.getElementById("gold").textContent=money(d.goldPer10g);document.getElementById("silver").textContent=money(d.silverPerKg);
@@ -56,5 +57,7 @@ function render(){
 }
 async function adminLogin(){const p=prompt("ज्वेलर एडमिन पासवर्ड दर्ज करें");if(!p)return;token=p;try{const r=await fetch("/api/settings",{headers:{Authorization:"Bearer "+token}});if(!r.ok)throw Error("पासवर्ड गलत है या सर्वर पर ADMIN_PASSWORD सेट नहीं है");settings=await r.json();document.getElementById("admin").style.display="block";document.getElementById("fields").innerHTML=keys.map(([k,l])=>'<div class="field"><label>'+l+'</label><input type="number" min="0" step="any" id="f_'+k+'" value="'+settings[k]+'"></div>').join("");}catch(e){token="";alert(e.message)}}
 async function saveSettings(){const s={};keys.forEach(([k])=>s[k]=Number(document.getElementById("f_"+k).value));const r=await fetch("/api/settings",{method:"PUT",headers:{"Content-Type":"application/json",Authorization:"Bearer "+token},body:JSON.stringify(s)});const d=await r.json();document.getElementById("saveStatus").textContent=r.ok?"सेव हो गया":"त्रुटि: "+(d.error||"");if(r.ok){settings=d.settings;render()}}
-load();setInterval(load,60000);
+async function loadMcxStatus(){try{const r=await fetch("/api/mcx-market-data");const d=await r.json();if(!r.ok||!d.available)throw Error(d.message||"MCX API अभी सेट नहीं है");document.getElementById("mcxGold").textContent=money(d.goldLtp);document.getElementById("mcxSilver").textContent=money(d.silverLtp);document.getElementById("mcxStatus").textContent="MCX Futures • अपडेट: "+new Date(d.timestamp).toLocaleString("hi-IN");}catch(e){document.getElementById("mcxGold").textContent="उपलब्ध नहीं";document.getElementById("mcxSilver").textContent="उपलब्ध नहीं";document.getElementById("mcxStatus").textContent=e.message}}
+if("serviceWorker" in navigator)window.addEventListener("load",()=>navigator.serviceWorker.register("/sw.js").catch(()=>{}));
+load();setInterval(load,60000);setInterval(loadMcxStatus,5000);
 </script></body></html>
