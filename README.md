@@ -16,3 +16,7 @@ A genuine MCX futures feed requires an authorized data vendor, exchange/data lic
 
 ## Rate calculation
 Gold purity factors used: 18K 75%, 20K 83.33%, 22K 91.6%, 24K 100%. The dashboard adds badla, making and configured GST. Silver uses badla, RTGS add, making and GST. Confirm tax and commercial treatment with your accountant before using for billing.
+
+
+## Single-mobile MCX demo preparation
+The dashboard has a dedicated MCX Gold/Silver Futures panel and installable PWA shell. The MCX endpoint intentionally returns unavailable until the account-specific authorized RMoney XTS login/session flow, MCX instrument tokens and credentials are supplied. No spot, delayed or simulated price is represented as MCX. Keep API secrets only in private hosting environment variables, never in GitHub or chat. The PWA shell does not cache API data offline.
